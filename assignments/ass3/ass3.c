@@ -21,6 +21,8 @@ struct list {
 
 void assignSpace(struct list *l, int nExtra);
 
+void printList(struct list *l);
+
 int main() {
     int nExtra = 5;
     struct list *l = malloc(sizeof(struct list));
@@ -29,6 +31,7 @@ int main() {
     l->tail = malloc(sizeof(struct node));
     l->tail->v = 0;
     assignSpace(l, nExtra);
+    printList(l);
     return 0;
 }
 
@@ -41,4 +44,13 @@ void assignSpace(struct list *l, int nExtra) {
         l->left = t;
         if (l->head == NULL) l->head = t;
     }
+}
+
+void printList(struct list *l) {
+    // print head
+    // print up to left
+    // print right
+    // print up to tail
+    printf("[%d, ", l->head->v);
+    printf("%d]\n", l->tail->v);
 }
