@@ -43,7 +43,6 @@ int main() {
 
     printList(l);
     assignSpace(l, nExtra);
-    l->left->next = l->right;
     printList(l);
 
     freeNode(l->head);
@@ -53,6 +52,7 @@ int main() {
 
 void assignSpace(struct list *l, int nExtra) {
     struct node *t = NULL;
+
     for (int i = 0; i < nExtra; i++) {
         t = malloc(sizeof(struct node));
         t->v = -1;
@@ -79,6 +79,7 @@ void assignSpace(struct list *l, int nExtra) {
 
 void printList(struct list *l) {
     struct node *cur = NULL;
+
     if (l->head != NULL) {
         printf("[%d", l->head->v);
 
@@ -87,6 +88,7 @@ void printList(struct list *l) {
             printf(", %d", cur->v);
             cur = cur->next;
         }
+
         printf("]\n");
     }
 }
