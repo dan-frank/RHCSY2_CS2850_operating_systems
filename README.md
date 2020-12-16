@@ -1,1 +1,1 @@
-# RHCSY2_CS2850_operating_systems
+# Royal Holloway Computer Science - CS2850: Operating Systems
