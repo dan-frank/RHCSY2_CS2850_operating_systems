@@ -23,33 +23,42 @@ void assignSpace(struct list *l, int nExtra);
 
 void printList(struct list *l);
 
-void freeList(struct list *l);
+void pull(struct list *l);
+
+void push(struct list *l, int v);
 
 void freeNode(struct node *n);
 
 int main() {
     int nExtra = 5;
     struct list *l = malloc(sizeof(struct list));
+
     printList(l);
+
     l->head = malloc(sizeof(struct node));
     l->head->v = 0;
     l->tail = malloc(sizeof(struct node));
     l->tail->v = 0;
+    l->head->next = l->tail;
+
     printList(l);
     assignSpace(l, nExtra);
+    l->left->next = l->right;
     printList(l);
-    freeList(l);
+
+    freeNode(l->head);
+
     return 0;
 }
 
 void assignSpace(struct list *l, int nExtra) {
+    struct node *t = NULL;
     for (int i = 0; i < nExtra; i++) {
-        struct node *t = malloc(sizeof(struct node));
+        t = malloc(sizeof(struct node));
         t->v = -1;
 
-        if (l->head == NULL) {
-            l->head = t;
-        } else {
+        if (l->head == NULL) l->head = t;
+        else {
             if (l->left == NULL) {
                 l->head->next = t;
                 t->prev = l->head;
@@ -60,38 +69,26 @@ void assignSpace(struct list *l, int nExtra) {
             l->left = t;
         }
     }
+
+    if (l->right == NULL) {
+        l->right = l->left;
+        l->left = l->left->prev;
+        l->right->next = l->tail;
+    } else l->left->next = l->right;
 }
 
 void printList(struct list *l) {
     struct node *cur = NULL;
-
     if (l->head != NULL) {
-        printf("[%d, ", l->head->v);
+        printf("[%d", l->head->v);
 
         cur = l->head->next;
         while (cur != NULL) {
-            printf("%d, ", cur->v);
+            printf(", %d", cur->v);
             cur = cur->next;
         }
-    }
-
-    if (l->tail != NULL) {
-        cur = l->right;
-        if (cur != NULL) {
-            while (cur != NULL) {
-                printf("%d, ", cur->v);
-                cur = cur->prev;
-            }
-        }
-        else printf("%d", l->tail->v);
         printf("]\n");
     }
-}
-
-void freeList(struct list *l) {
-    if (l->head != NULL) freeNode(l->head);
-    if (l->tail != NULL) freeNode(l->tail);
-    free(l);
 }
 
 void freeNode(struct node *n) {
