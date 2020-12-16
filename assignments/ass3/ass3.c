@@ -113,23 +113,24 @@ void freeNode(struct node *n) {
 }
 
 void freeSpace(struct list *l) {
-    int count = 0;
+    int count = -1;
     struct node *cur = l->left->next;
     while (cur->v == -1) {
         cur = cur->next;
         count++;
     }
 
-    if (count > NEXTRA) {
-        struct node *removeL = l->left;
-        while (removeL->v != -1) removeL = removeL->next;
-        struct node *removeR = removeL;
-        for (int i = 0; i < (NEXTRA - 1); i++) removeR = removeR->next;
+    if (count >= NEXTRA) {
+        struct node *delStart = l->left;
+        while (delStart->v != -1) delStart = delStart->next;
 
-        l->left->next = removeR->next;
-        removeR->next = NULL;
+        struct node *delEnd = delStart;
+        for (int i = 0; i < (count - 1); i++) delEnd = delEnd->next;
 
-        freeNode(removeL);
+        l->left->next = delEnd->next;
+        delEnd->next = NULL;
+
+        freeNode(delStart);
     }
 }
 
