@@ -1,0 +1,9 @@
+The read function reads up to size bytes from the file with descriptor filedes, storing the results in the buffer. (This is not necessarily a character string, and no terminating null character is added.)
+
+The return value is the number of bytes actually read. This might be less than size; for example, if there aren’t that many bytes left in the file or if there aren’t that many bytes immediately available. The exact behavior depends on what kind of file it is. Note that reading less than size bytes is not an error.
+
+A value of zero indicates end-of-file (except if the value of the size argument is also zero). This is not considered an error. If you keep calling read while at end-of-file, it will keep returning zero and doing nothing else.
+
+If read returns at least one character, there is no way you can tell whether end-of-file was reached. But if you did reach the end, the next read will return zero.
+
+In case of an error, read returns -1. The following errno error conditions are defined for this function: 
