@@ -5,6 +5,10 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+#define NEXTRA 5
+#define LEFT false
+#define RIGHT true
+
 struct node {
     int v;
     struct node *next;
@@ -32,7 +36,6 @@ void freeList(struct list *l);
 void freeNode(struct node *n);
 
 int main() {
-    int nExtra = 5;
     struct list *l = malloc(sizeof(struct list));
 
     printList(l);
@@ -44,11 +47,23 @@ int main() {
     l->head->next = l->tail;
 
     printList(l);
-    assignSpace(l, nExtra);
-    l->left = l->left->next->next->next->next->next;
-    l->left->v = 2;
-    printList(l);
-    assignSpace(l, nExtra);
+    assignSpace(l, NEXTRA);
+    push(l, 1);
+    push(l, 3);
+    push(l, 5);
+    push(l, 7);
+    push(l, 9);
+    push(l, 11);
+    push(l, 2);
+    push(l, 11);
+    push(l, 12);
+    push(l, 11);
+    push(l, 14);
+    push(l, 11);
+    push(l, 112);
+    push(l, 11);
+    push(l, 11);
+    push(l, 11);
     printList(l);
 
     freeList(l);
@@ -105,15 +120,21 @@ void printList(struct list *l) {
     }
 }
 
-void pull(struct list *l) {
-
+void pull(struct list *l, boolean side) {
 }
 
 void push(struct list *l, int v) {
-    if (v % 2 == 0) { // even
-
-    } else { // odd
-
+    if (l->right->prev->v == -1 && l->left->next->v == -1) {
+        if (v % 2 == 0) {
+            l->right = l->right->prev;
+            l->right->v = v;
+        } else {
+            l->left = l->left->next;
+            l->left->v = v;
+        }
+    } else {
+        assignSpace(l, NEXTRA);
+        push(l, v);
     }
 }
 
