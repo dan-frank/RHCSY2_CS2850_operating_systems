@@ -39,18 +39,33 @@ void assignSpace(struct list *l, int nExtra) {
     for (int i = 0; i < nExtra; i++) {
         struct node *t = malloc(sizeof(struct node));
         t->v = -1;
-        if (l->left == NULL) t->prev = l->head;
-        else t->prev = l->left;
-        l->left = t;
-        if (l->head == NULL) l->head = t;
+
+        if (l->head == NULL) {
+            l->head = t;
+        } else {
+            if (l->left == NULL) {
+                l->head->next = t;
+                t->prev = l->head;
+            } else {
+                l->left->next = t;
+                t->prev = l->left;
+            }
+            l->left = t;
+        }
     }
 }
 
 void printList(struct list *l) {
-    // print head
-    // print up to left
-    // print right
-    // print up to tail
     printf("[%d, ", l->head->v);
+
+    struct node *cur = l->head->next;
+    while (cur != NULL) {
+        printf("%d, ", cur->v);
+        cur = cur->next;
+    }
+
+    // print right
+
+
     printf("%d]\n", l->tail->v);
 }
