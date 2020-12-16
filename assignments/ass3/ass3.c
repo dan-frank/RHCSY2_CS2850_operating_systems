@@ -27,6 +27,8 @@ void pull(struct list *l);
 
 void push(struct list *l, int v);
 
+void freeList(struct list *l);
+
 void freeNode(struct node *n);
 
 int main() {
@@ -45,7 +47,7 @@ int main() {
     assignSpace(l, nExtra);
     printList(l);
 
-    freeNode(l->head);
+    freeList(l);
 
     return 0;
 }
@@ -91,6 +93,15 @@ void printList(struct list *l) {
 
         printf("]\n");
     }
+}
+
+void pull(struct list *l);
+
+void push(struct list *l, int v);
+
+void freeList(struct list *l) {
+    if (l != NULL) freeNode(l->head);
+    free(l);
 }
 
 void freeNode(struct node *n) {
