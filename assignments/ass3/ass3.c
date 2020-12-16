@@ -26,10 +26,12 @@ void printList(struct list *l);
 int main() {
     int nExtra = 5;
     struct list *l = malloc(sizeof(struct list));
+    printList(l);
     l->head = malloc(sizeof(struct node));
     l->head->v = 0;
     l->tail = malloc(sizeof(struct node));
     l->tail->v = 0;
+    printList(l);
     assignSpace(l, nExtra);
     printList(l);
     return 0;
@@ -56,19 +58,25 @@ void assignSpace(struct list *l, int nExtra) {
 }
 
 void printList(struct list *l) {
-    printf("[%d, ", l->head->v);
+    struct node *cur = NULL;
 
-    struct node *cur = l->head->next;
-    while (cur != NULL) {
-        printf("%d, ", cur->v);
-        cur = cur->next;
+    if (l->head != NULL) {
+        printf("[%d, ", l->head->v);
+
+        cur = l->head->next;
+        while (cur != NULL) {
+            printf("%d, ", cur->v);
+            cur = cur->next;
+        }
     }
 
-    cur = l->right;
-    while (cur != NULL) {
-        printf("%d, ", cur->v);
-        cur = cur->prev;
-    }
+    if (l->tail != NULL) {
+        cur = l->right;
+        while (cur != NULL) {
+            printf("%d, ", cur->v);
+            cur = cur->prev;
+        }
 
-    printf("%d]\n", l->tail->v);
+        printf("%d]\n", l->tail->v);
+    }
 }
