@@ -23,6 +23,8 @@ void assignSpace(struct list *l, int nExtra);
 
 void printList(struct list *l);
 
+void freeList(struct list *l);
+
 void freeNode(struct node *n);
 
 int main() {
@@ -36,6 +38,7 @@ int main() {
     printList(l);
     assignSpace(l, nExtra);
     printList(l);
+    freeList(l);
     return 0;
 }
 
@@ -88,6 +91,7 @@ void printList(struct list *l) {
 void freeList(struct list *l) {
     if (l->head != NULL) freeNode(l->head);
     if (l->tail != NULL) freeNode(l->tail);
+    free(l);
 }
 
 void freeNode(struct node *n) {
