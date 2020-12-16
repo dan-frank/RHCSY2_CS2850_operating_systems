@@ -23,6 +23,8 @@ void assignSpace(struct list *l, int nExtra);
 
 void printList(struct list *l);
 
+void freeNode(struct node *n);
+
 int main() {
     int nExtra = 5;
     struct list *l = malloc(sizeof(struct list));
@@ -72,11 +74,23 @@ void printList(struct list *l) {
 
     if (l->tail != NULL) {
         cur = l->right;
-        while (cur != NULL) {
-            printf("%d, ", cur->v);
-            cur = cur->prev;
+        if (cur != NULL) {
+            while (cur != NULL) {
+                printf("%d, ", cur->v);
+                cur = cur->prev;
+            }
         }
-
-        printf("%d]\n", l->tail->v);
+        else printf("%d", l->tail->v);
+        printf("]\n");
     }
+}
+
+void freeList(struct list *l) {
+    if (l->head != NULL) freeNode(l->head);
+    if (l->tail != NULL) freeNode(l->tail);
+}
+
+void freeNode(struct node *n) {
+    if (n->next != NULL) freeNode(n->next);
+    free(n);
 }
