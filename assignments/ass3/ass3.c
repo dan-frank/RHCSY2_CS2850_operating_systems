@@ -25,15 +25,17 @@ struct list {
 
 void assignSpace(struct list *l, int nExtra);
 
+void freeList(struct list *l);
+
+void freeNode(struct node *n);
+
+void freeSpace(struct list *l);
+
 void printList(struct list *l);
 
 void pull(struct list *l, int side);
 
 void push(struct list *l, int v);
-
-void freeList(struct list *l);
-
-void freeNode(struct node *n);
 
 int main() {
     struct list *l = malloc(sizeof(struct list));
@@ -51,13 +53,13 @@ int main() {
     assignSpace(l, NEXTRA);
     printList(l);
 
-    int test[4] = {12, 23, 34, 45};
+    int test[6] = {12, 23, 34, 45, 56, 78};
     for (int i = 0; i < sizeof(test) / sizeof(test[0]); i++) {
         push(l, test[i]);
         printList(l);
     }
 
-    for (int i = 0; i < (sizeof(test) / sizeof(test[0])) + 3; i++) {
+    for (int i = 0; i < (sizeof(test) / sizeof(test[0])) + 1; i++) {
         pull(l, LEFT);
         printList(l);
     }
@@ -100,6 +102,37 @@ void assignSpace(struct list *l, int nExtra) {
     while (l->left->next->v != -1) l->left = l->left->next;
 }
 
+void freeList(struct list *l) {
+    if (l != NULL) freeNode(l->head);
+    free(l);
+}
+
+void freeNode(struct node *n) {
+    if (n->next != NULL) freeNode(n->next);
+    free(n);
+}
+
+void freeSpace(struct list *l) {
+    int count = 0;
+    struct node *cur = l->left->next;
+    while (cur->v == -1) {
+        cur = cur->next;
+        count++;
+    }
+
+    if (count > NEXTRA) {
+        struct node *removeL = l->left;
+        while (removeL->v != -1) removeL = removeL->next;
+        struct node *removeR = removeL;
+        for (int i = 0; i < (NEXTRA - 1); i++) removeR = removeR->next;
+
+        l->left->next = removeR->next;
+        removeR->next = NULL;
+
+        freeNode(removeL);
+    }
+}
+
 void printList(struct list *l) {
     struct node *cur = NULL;
 
@@ -117,16 +150,22 @@ void printList(struct list *l) {
 }
 
 void pull(struct list *l, int side) {
-    if (side == LEFT) {
-        if (l->left != l->head) {
-            l->left = l->left->prev;
-            l->left->next->v = -1;
-        } else if (l->right != l->tail) pull(l, RIGHT);
-    } else if (side == RIGHT) {
-        if (l->right != l->tail) {
-            l->right = l->right->next;
-            l->right->prev->v = -1;
-        } else pull(l, LEFT);
+    if (l->left != l->head || l->right != l->tail) {
+        if (side == LEFT) {
+            if (l->left != l->head) {
+                l->left = l->left->prev;
+                l->left->next->v = -1;
+                freeSpace(l);
+            } else pull(l, RIGHT);
+        } else if (side == RIGHT) {
+            if (l->right != l->tail) {
+                l->right = l->right->next;
+                l->right->prev->v = -1;
+                freeSpace(l);
+            } else pull(l, LEFT);
+        }
+    } else {
+        printf("warning: no nodes to delete!\n");
     }
 }
 
@@ -143,14 +182,4 @@ void push(struct list *l, int v) {
         assignSpace(l, NEXTRA);
         push(l, v);
     }
-}
-
-void freeList(struct list *l) {
-    if (l != NULL) freeNode(l->head);
-    free(l);
-}
-
-void freeNode(struct node *n) {
-    if (n->next != NULL) freeNode(n->next);
-    free(n);
 }
