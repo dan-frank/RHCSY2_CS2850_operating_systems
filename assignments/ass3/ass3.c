@@ -64,8 +64,11 @@ void printList(struct list *l) {
         cur = cur->next;
     }
 
-    // print right
-
+    cur = l->right;
+    while (cur != NULL) {
+        printf("%d, ", cur->v);
+        cur = cur->prev;
+    }
 
     printf("%d]\n", l->tail->v);
 }
