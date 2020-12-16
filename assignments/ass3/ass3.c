@@ -45,6 +45,10 @@ int main() {
 
     printList(l);
     assignSpace(l, nExtra);
+    l->left = l->left->next->next->next->next->next;
+    l->left->v = 2;
+    printList(l);
+    assignSpace(l, nExtra);
     printList(l);
 
     freeList(l);
@@ -73,10 +77,16 @@ void assignSpace(struct list *l, int nExtra) {
     }
 
     if (l->right == NULL) {
-        l->right = l->left;
-        l->left = l->left->prev;
-        l->right->next = l->tail;
-    } else l->left->next = l->right;
+        l->right = l->tail;
+        l->left->next = l->right;
+        l->right->prev = l->left;
+    } else {
+        l->left->next = l->right;
+        l->right->prev = l->left;
+    }
+
+    l->left = l->head;
+    while (l->left->next->v != -1) l->left = l->left->next;
 }
 
 void printList(struct list *l) {
@@ -95,9 +105,17 @@ void printList(struct list *l) {
     }
 }
 
-void pull(struct list *l);
+void pull(struct list *l) {
 
-void push(struct list *l, int v);
+}
+
+void push(struct list *l, int v) {
+    if (v % 2 == 0) { // even
+
+    } else { // odd
+
+    }
+}
 
 void freeList(struct list *l) {
     if (l != NULL) freeNode(l->head);
