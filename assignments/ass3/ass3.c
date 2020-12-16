@@ -19,42 +19,26 @@ struct list {
     int size;
 };
 
-int insertNode(struct node *head, int z, struct node **newHead) {
-    int pos = 0;
-    struct node *cur = head;
-    while (cur != NULL) {
-        head = cur;
-        cur = cur->next;
-        pos++;
-    }
-    struct node *new = malloc(sizeof(struct node));
-    new->v = z;
-    if (cur) new->next = NULL;
-    if (cur != head) head-> next = new;
-    else *newHead = new;
-    new->next = cur;
-    return pos;
-}
-
+void assignSpace(struct list *l, int nExtra);
 
 int main() {
-//    int nExtra = 5;
-    struct node *head = NULL;
-
-    struct node *t = malloc(sizeof(struct node));
-    t->v = -1;
-    t->next = NULL;
-    t->prev = NULL;
-    head = t;
-
-//    for (int i = 0; i < nExtra; i++) {
-//        insertNode(head, -1);
-//    }
-
-    printf("1:%d\n", head->v);
-//    printf("2:%d\n", head->next->v);
-//    printf("3:%d\n", head->next->next->v);
-//    printf("4:%d\n", head->next->next->next->v);
-
+    int nExtra = 5;
+    struct list *l = malloc(sizeof(struct list));
+    l->head = malloc(sizeof(struct node));
+    l->head->v = 0;
+    l->tail = malloc(sizeof(struct node));
+    l->tail->v = 0;
+    assignSpace(l, nExtra);
     return 0;
+}
+
+void assignSpace(struct list *l, int nExtra) {
+    for (int i = 0; i < nExtra; i++) {
+        struct node *t = malloc(sizeof(struct node));
+        t->v = -1;
+        if (l->left == NULL) t->prev = l->head;
+        else t->prev = l->left;
+        l->left = t;
+        if (l->head == NULL) l->head = t;
+    }
 }
