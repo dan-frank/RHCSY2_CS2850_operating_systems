@@ -44,6 +44,8 @@ void push(struct list *l, int v);
 
 void pushIntegers(struct list *l);
 
+pthread_mutex_t mutex = PTHREAD_MUTEX_INITIALIZER;
+
 int main() {
     srand(getchar()); // get char for random before any other prints
 
@@ -74,6 +76,7 @@ int main() {
 void assignSpace(struct list *l) {
     struct node *t = NULL;
 
+    pthread_mutex_lock(&mutex);
     for (int i = 0; i < NEXTRA; i++) {
         t = malloc(sizeof(struct node));
         t->v = -1;
@@ -102,6 +105,7 @@ void assignSpace(struct list *l) {
 
     l->left = l->head;
     while (l->left->next->v != -1) l->left = l->left->next;
+    pthread_mutex_unlock(&mutex);
 }
 
 void freeList(struct list *l) {
@@ -115,6 +119,7 @@ void freeNode(struct node *n) {
 }
 
 void freeSpace(struct list *l) {
+    pthread_mutex_lock(&mutex);
     int count = -1;
     struct node *cur = l->left->next;
     while (cur->v == -1) {
@@ -134,9 +139,11 @@ void freeSpace(struct list *l) {
 
         freeNode(delStart);
     }
+    pthread_mutex_unlock(&mutex);
 }
 
 void printList(struct list *l) {
+    pthread_mutex_lock(&mutex);
     struct node *cur = NULL;
 
     if (l->head != NULL) {
@@ -150,10 +157,12 @@ void printList(struct list *l) {
 
         printf("]\n");
     }
+    pthread_mutex_unlock(&mutex);
 }
 
 void pull(struct list *l, int side) {
     if (l->left != l->head || l->right != l->tail) {
+        pthread_mutex_lock(&mutex);
         if (side == LEFT) {
             if (l->left != l->head) {
                 l->left = l->left->prev;
@@ -165,6 +174,7 @@ void pull(struct list *l, int side) {
                 l->right->prev->v = -1;
             } else pull(l, LEFT);
         }
+        pthread_mutex_unlock(&mutex);
     } else printf("warning: no nodes to delete!\n");
 
     freeSpace(l);
@@ -181,6 +191,7 @@ void pullIntegers(struct list *l) {
 void push(struct list *l, int v) {
     if (l->right->prev->v != -1 && l->left->next->v != -1) assignSpace(l);
 
+    pthread_mutex_lock(&mutex);
     if (v % 2 == 0) {
         l->right = l->right->prev;
         l->right->v = v;
@@ -188,6 +199,7 @@ void push(struct list *l, int v) {
         l->left = l->left->next;
         l->left->v = v;
     }
+    pthread_mutex_unlock(&mutex);
 }
 
 void pushIntegers(struct list *l) {
