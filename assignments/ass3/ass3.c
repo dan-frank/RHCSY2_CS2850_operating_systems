@@ -5,9 +5,10 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>
-#include <sys/wait.h> // #include <wait.h>
+#include <pthread.h>
 
 #define NEXTRA 5
+#define MAXELEMENTS 15;
 #define LEFT 0
 #define RIGHT 1
 
@@ -37,11 +38,11 @@ void printList(struct list *l);
 
 void pull(struct list *l, int side);
 
-void pullIntegers(struct list *l, int maxElements);
+void pullIntegers(struct list *l);
 
 void push(struct list *l, int v);
 
-void pushIntegers(struct list *l, int maxElements);
+void pushIntegers(struct list *l);
 
 int main() {
     srand(getchar()); // get char for random before any other prints
@@ -60,25 +61,11 @@ int main() {
     assignSpace(l);
     printList(l);
 
-    int maxElements = 15;
-    int pid = fork();
-    if (pid == 0) pushIntegers(l, maxElements);
-    else pullIntegers(l, maxElements);
-    wait(NULL);
-
-    // To prove pull works cause I don't know how to implement the mutex pipe to synchronise the push pull data
-    push(l, 1);
-    printList(l);
-    push(l, 2);
-    printList(l);
-    push(l, 3);
-    printList(l);
-    pull(l, LEFT);
-    printList(l);
-    pull(l, LEFT);
-    printList(l);
-    pull(l, LEFT);
-    printList(l);
+    pthread_t t1;
+    pthread_create(&t1, NULL, (void *) pushIntegers, (struct list *) l);
+    pthread_join(t1, NULL);
+    pthread_create(&t1, NULL, (void *) pullIntegers, (struct list *) l);
+    pthread_join(t1, NULL);
 
     freeList(l);
     return 0;
@@ -183,8 +170,9 @@ void pull(struct list *l, int side) {
     freeSpace(l);
 }
 
-void pullIntegers(struct list *l, int maxElements) {
-    for (int i = 0; i < maxElements; i++) {
+void pullIntegers(struct list *l) {
+    int max = MAXELEMENTS;
+    for (int i = 0; i < max; i++) {
         pull(l, rand() % 2);
         printList(l);
     }
@@ -202,8 +190,9 @@ void push(struct list *l, int v) {
     }
 }
 
-void pushIntegers(struct list *l, int maxElements) {
-    for (int i = 0; i < maxElements; i++) {
+void pushIntegers(struct list *l) {
+    int max = MAXELEMENTS;
+    for (int i = 0; i < max; i++) {
         int z = 100 * ((float) rand()) / ((float) RAND_MAX);
         push(l, z);
         printList(l);
