@@ -23,7 +23,7 @@ struct list {
     int size;
 };
 
-void assignSpace(struct list *l, int nExtra);
+void assignSpace(struct list *l);
 
 void freeList(struct list *l);
 
@@ -38,12 +38,12 @@ void pull(struct list *l, int side);
 void push(struct list *l, int v);
 
 int main() {
-    srand(getchar());
+    srand(getchar()); // get char for random before any other prints
 
-    struct list *l = malloc(sizeof(struct list));
-    printList(l);
+    struct list *l = malloc(sizeof(struct list)); // declare list
+    printList(l); // check print errors on empty
 
-    l->head = malloc(sizeof(struct node));
+    l->head = malloc(sizeof(struct node)); // assign list
     l->head->v = 0;
     l->tail = malloc(sizeof(struct node));
     l->tail->v = 0;
@@ -51,10 +51,10 @@ int main() {
 
     printList(l);
 
-    assignSpace(l, NEXTRA);
+    assignSpace(l);
     printList(l);
 
-    int maxElements = 101;
+    int maxElements = 21;
 
     for (int i = 0; i < maxElements; i++) {
         int z = 100 * ((float)rand()) / ((float)RAND_MAX);
@@ -68,14 +68,13 @@ int main() {
     }
 
     freeList(l);
-
     return 0;
 }
 
-void assignSpace(struct list *l, int nExtra) {
+void assignSpace(struct list *l) {
     struct node *t = NULL;
 
-    for (int i = 0; i < nExtra; i++) {
+    for (int i = 0; i < NEXTRA; i++) {
         t = malloc(sizeof(struct node));
         t->v = -1;
 
@@ -183,7 +182,7 @@ void push(struct list *l, int v) {
             l->left->v = v;
         }
     } else {
-        assignSpace(l, NEXTRA);
+        assignSpace(l);
         push(l, v);
     }
 }
