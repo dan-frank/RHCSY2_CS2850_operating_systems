@@ -5,6 +5,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>
+#include <sys/wait.h> // #include <wait.h>
 
 #define NEXTRA 5
 #define LEFT 0
@@ -36,7 +37,11 @@ void printList(struct list *l);
 
 void pull(struct list *l, int side);
 
+void pullIntegers(struct list *l, int maxElements);
+
 void push(struct list *l, int v);
+
+void pushIntegers(struct list *l, int maxElements);
 
 int main() {
     srand(getchar()); // get char for random before any other prints
@@ -57,19 +62,8 @@ int main() {
 
     int maxElements = 15;
     int pid = fork();
-
-    if (pid == 0) {
-        for (int i = 0; i < maxElements; i++) {
-            int z = 100 * ((float) rand()) / ((float) RAND_MAX);
-            push(l, z);
-            printList(l);
-        }
-    } else {
-        for (int i = 0; i < maxElements; i++) {
-            pull(l, rand() % 2);
-            printList(l);
-        }
-    }
+    if (pid == 0) pushIntegers(l, maxElements);
+    else pullIntegers(l, maxElements);
     wait(NULL);
 
     // To prove pull works cause I don't know how to implement the mutex pipe to synchronise the push pull data
@@ -177,17 +171,22 @@ void pull(struct list *l, int side) {
             if (l->left != l->head) {
                 l->left = l->left->prev;
                 l->left->next->v = -1;
-                freeSpace(l);
             } else pull(l, RIGHT);
         } else if (side == RIGHT) {
             if (l->right != l->tail) {
                 l->right = l->right->next;
                 l->right->prev->v = -1;
-                freeSpace(l);
             } else pull(l, LEFT);
         }
-    } else {
-        printf("warning: no nodes to delete!\n");
+    } else printf("warning: no nodes to delete!\n");
+
+    freeSpace(l);
+}
+
+void pullIntegers(struct list *l, int maxElements) {
+    for (int i = 0; i < maxElements; i++) {
+        pull(l, rand() % 2);
+        printList(l);
     }
 }
 
@@ -200,5 +199,13 @@ void push(struct list *l, int v) {
     } else {
         l->left = l->left->next;
         l->left->v = v;
+    }
+}
+
+void pushIntegers(struct list *l, int maxElements) {
+    for (int i = 0; i < maxElements; i++) {
+        int z = 100 * ((float) rand()) / ((float) RAND_MAX);
+        push(l, z);
+        printList(l);
     }
 }
