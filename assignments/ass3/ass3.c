@@ -54,10 +54,10 @@ int main() {
     assignSpace(l);
     printList(l);
 
-    int maxElements = 21;
+    int maxElements = 15;
 
     for (int i = 0; i < maxElements; i++) {
-        int z = 100 * ((float)rand()) / ((float)RAND_MAX);
+        int z = 100 * ((float) rand()) / ((float) RAND_MAX);
         push(l, z);
         printList(l);
     }
@@ -173,16 +173,13 @@ void pull(struct list *l, int side) {
 }
 
 void push(struct list *l, int v) {
-    if (l->right->prev->v == -1 && l->left->next->v == -1) {
-        if (v % 2 == 0) {
-            l->right = l->right->prev;
-            l->right->v = v;
-        } else {
-            l->left = l->left->next;
-            l->left->v = v;
-        }
+    if (l->right->prev->v != -1 && l->left->next->v != -1) assignSpace(l);
+
+    if (v % 2 == 0) {
+        l->right = l->right->prev;
+        l->right->v = v;
     } else {
-        assignSpace(l);
-        push(l, v);
+        l->left = l->left->next;
+        l->left->v = v;
     }
 }
