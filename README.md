@@ -75,4 +75,4 @@ Year 2 Semester 2
 
 ### Assignment 3 - 2020-12-21
 
-- [ ] Dynamic doubly linked list
+- [x] Dynamic doubly linked list

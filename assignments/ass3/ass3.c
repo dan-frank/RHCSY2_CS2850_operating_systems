@@ -143,9 +143,9 @@ void freeSpace(struct list *l) {
 }
 
 void printList(struct list *l) {
-    pthread_mutex_lock(&mutex);
     struct node *cur = NULL;
 
+    pthread_mutex_lock(&mutex);
     if (l->head != NULL) {
         printf("[%d", l->head->v);
 
@@ -161,8 +161,8 @@ void printList(struct list *l) {
 }
 
 void pull(struct list *l, int side) {
+    pthread_mutex_lock(&mutex);
     if (l->left != l->head || l->right != l->tail) {
-        pthread_mutex_lock(&mutex);
         if (side == LEFT) {
             if (l->left != l->head) {
                 l->left = l->left->prev;
@@ -174,8 +174,8 @@ void pull(struct list *l, int side) {
                 l->right->prev->v = -1;
             } else pull(l, LEFT);
         }
-        pthread_mutex_unlock(&mutex);
     } else printf("warning: no nodes to delete!\n");
+    pthread_mutex_unlock(&mutex);
 
     freeSpace(l);
 }
