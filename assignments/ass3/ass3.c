@@ -4,6 +4,7 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+#include <unistd.h>
 
 #define NEXTRA 5
 #define LEFT 0
@@ -55,17 +56,35 @@ int main() {
     printList(l);
 
     int maxElements = 15;
+    int pid = fork();
 
-    for (int i = 0; i < maxElements; i++) {
-        int z = 100 * ((float) rand()) / ((float) RAND_MAX);
-        push(l, z);
-        printList(l);
+    if (pid == 0) {
+        for (int i = 0; i < maxElements; i++) {
+            int z = 100 * ((float) rand()) / ((float) RAND_MAX);
+            push(l, z);
+            printList(l);
+        }
+    } else {
+        for (int i = 0; i < maxElements; i++) {
+            pull(l, rand() % 2);
+            printList(l);
+        }
     }
+    wait(NULL);
 
-    for (int i = 0; i < maxElements; i++) {
-        pull(l, rand() % 2);
-        printList(l);
-    }
+    // To prove pull works cause I don't know how to implement the mutex pipe to synchronise the push pull data
+    push(l, 1);
+    printList(l);
+    push(l, 2);
+    printList(l);
+    push(l, 3);
+    printList(l);
+    pull(l, LEFT);
+    printList(l);
+    pull(l, LEFT);
+    printList(l);
+    pull(l, LEFT);
+    printList(l);
 
     freeList(l);
     return 0;
