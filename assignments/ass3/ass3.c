@@ -48,7 +48,7 @@ int main() {
     srand(getchar()); // get char for random before any other prints
 
     struct list *l = malloc(sizeof(struct list)); // declare list
-    printList(l); // check print errors on empty
+    printList(l); // check print doesn't error on empty
 
     l->head = malloc(sizeof(struct node)); // assign list
     l->head->v = 0;
@@ -61,11 +61,11 @@ int main() {
     assignSpace(l);
     printList(l);
 
-    pthread_t t1;
+    pthread_t t1, t2;
     pthread_create(&t1, NULL, (void *) pushIntegers, (struct list *) l);
-    pthread_create(&t1, NULL, (void *) pullIntegers, (struct list *) l);
+    pthread_create(&t2, NULL, (void *) pullIntegers, (struct list *) l);
     pthread_join(t1, NULL);
-    pthread_join(t1, NULL);
+    pthread_join(t2, NULL);
 
     freeList(l);
     return 0;
