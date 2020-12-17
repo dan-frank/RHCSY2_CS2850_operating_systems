@@ -38,8 +38,9 @@ void pull(struct list *l, int side);
 void push(struct list *l, int v);
 
 int main() {
-    struct list *l = malloc(sizeof(struct list));
+    srand(getchar());
 
+    struct list *l = malloc(sizeof(struct list));
     printList(l);
 
     l->head = malloc(sizeof(struct node));
@@ -53,14 +54,16 @@ int main() {
     assignSpace(l, NEXTRA);
     printList(l);
 
-    int test[6] = {12, 23, 34, 45, 56, 78};
-    for (int i = 0; i < sizeof(test) / sizeof(test[0]); i++) {
-        push(l, test[i]);
+    int maxElements = 101;
+
+    for (int i = 0; i < maxElements; i++) {
+        int z = 100 * ((float)rand()) / ((float)RAND_MAX);
+        push(l, z);
         printList(l);
     }
 
-    for (int i = 0; i < (sizeof(test) / sizeof(test[0])) + 1; i++) {
-        pull(l, LEFT);
+    for (int i = 0; i < maxElements; i++) {
+        pull(l, rand() % 2);
         printList(l);
     }
 
