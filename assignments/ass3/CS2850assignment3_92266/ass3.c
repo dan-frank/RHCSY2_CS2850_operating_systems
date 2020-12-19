@@ -50,9 +50,13 @@ int main() {
 
     l->head = malloc(sizeof(struct node)); // assign list
     l->head->v = 0;
+    l->head->prev = NULL;
     l->tail = malloc(sizeof(struct node));
     l->tail->v = 0;
+    l->tail->next = NULL;
     l->head->next = l->tail;
+    l->left = NULL;
+    l->right = NULL;
 
     pthread_t t1, t2; // create and run threads
     pthread_create(&t1, NULL, (void *) pushIntegers, (struct list *) l);
