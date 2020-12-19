@@ -69,6 +69,11 @@ int main() {
     return 0;
 }
 
+/**
+ * Assigns free empty space in list.
+ *
+ * @param l list to add space too
+ */
 void assignSpace(struct list *l) {
     struct node *t = NULL;
 
@@ -102,16 +107,31 @@ void assignSpace(struct list *l) {
     while (l->left->next->v != EMPTYSPACE) l->left = l->left->next;
 }
 
+/**
+ * Frees list from memory after freeing all nodes.
+ *
+ * @param l list to be freed from memory
+ */
 void freeList(struct list *l) {
     if (l != NULL) freeNode(l->head);
     free(l);
 }
 
+/**
+ * Frees all linked nodes from memory.
+ *
+ * @param n node to start freeing from
+ */
 void freeNode(struct node *n) {
     if (n->next != NULL) freeNode(n->next);
     free(n);
 }
 
+/**
+ * Removes assigned empty space from list.
+ *
+ * @param l list to remove empty space from
+ */
 void freeSpace(struct list *l) {
     int count = EMPTYSPACE;
     struct node *cur = l->left->next;
@@ -134,6 +154,11 @@ void freeSpace(struct list *l) {
     }
 }
 
+/**
+ * Prints all the nodes in the list.
+ *
+ * @param l list to print nodes from
+ */
 void printList(struct list *l) {
     struct node *cur = NULL;
 
@@ -150,6 +175,12 @@ void printList(struct list *l) {
     }
 }
 
+/**
+ * Removes top node from either the left or right side of the list
+ *
+ * @param l list to remove node from
+ * @param side side to remove node from
+ */
 void pull(struct list *l, int side) {
     if (l->left != l->head || l->right != l->tail) {
         if (side == LEFT) {
@@ -168,6 +199,11 @@ void pull(struct list *l, int side) {
     freeSpace(l);
 }
 
+/**
+ * Attempts to pull node from list MAXELEMENTS times.
+ *
+ * @param l list to remove nodes from
+ */
 void pullIntegers(struct list *l) {
     int max = MAXELEMENTS;
     for (int i = 0; i < max; i++) {
@@ -178,6 +214,12 @@ void pullIntegers(struct list *l) {
     }
 }
 
+/**
+ * Push node to left of list if odd and right of list if even.
+ *
+ * @param l list to push node to
+ * @param v value to push to list
+ */
 void push(struct list *l, int v) {
     if (l->right == NULL && l->left == NULL) assignSpace(l);
     else if (l->right->prev->v != EMPTYSPACE && l->left->next->v != EMPTYSPACE) assignSpace(l);
@@ -191,6 +233,11 @@ void push(struct list *l, int v) {
     }
 }
 
+/**
+ * Attempts to push node from list MAXELEMENTS times.
+ *
+ * @param l list to add nodes too
+ */
 void pushIntegers(struct list *l) {
     int max = MAXELEMENTS;
     for (int i = 0; i < max; i++) {
