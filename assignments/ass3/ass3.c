@@ -48,7 +48,7 @@ void pushIntegers(struct list *l);
 pthread_mutex_t mutex = PTHREAD_MUTEX_INITIALIZER;
 
 int main() {
-    srand(getchar()); // get char for random before any other prints
+    srand(getchar()); // get char for random
 
     struct list *l = malloc(sizeof(struct list)); // declare list
 
