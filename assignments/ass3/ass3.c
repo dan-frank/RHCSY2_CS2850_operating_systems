@@ -141,7 +141,6 @@ void freeSpace(struct list *l) {
 void printList(struct list *l) {
     struct node *cur = NULL;
 
-    pthread_mutex_lock(&mutex);
     if (l->head != NULL) {
         printf("[%d", l->head->v);
 
@@ -153,11 +152,9 @@ void printList(struct list *l) {
 
         printf("]\n");
     }
-    pthread_mutex_unlock(&mutex);
 }
 
 void pull(struct list *l, int side) {
-    pthread_mutex_lock(&mutex);
     if (l->left != l->head || l->right != l->tail) {
         if (side == LEFT) {
             if (l->left != l->head) {
@@ -171,7 +168,6 @@ void pull(struct list *l, int side) {
             } else pull(l, LEFT);
         }
     } else printf("warning: no nodes to delete!\n");
-    pthread_mutex_unlock(&mutex);
 
     freeSpace(l);
 }
@@ -179,13 +175,14 @@ void pull(struct list *l, int side) {
 void pullIntegers(struct list *l) {
     int max = MAXELEMENTS;
     for (int i = 0; i < max; i++) {
+        pthread_mutex_lock(&mutex);
         pull(l, rand() % 2);
         printList(l);
+        pthread_mutex_unlock(&mutex);
     }
 }
 
 void push(struct list *l, int v) {
-    pthread_mutex_lock(&mutex);
     if (l->right->prev->v != EMPTYSPACE && l->left->next->v != EMPTYSPACE) assignSpace(l);
 
     if (v % 2 == 0) {
@@ -195,14 +192,15 @@ void push(struct list *l, int v) {
         l->left = l->left->next;
         l->left->v = v;
     }
-    pthread_mutex_unlock(&mutex);
 }
 
 void pushIntegers(struct list *l) {
     int max = MAXELEMENTS;
     for (int i = 0; i < max; i++) {
         int z = 100 * ((float) rand()) / ((float) RAND_MAX);
+        pthread_mutex_lock(&mutex);
         push(l, z);
         printList(l);
+        pthread_mutex_unlock(&mutex);
     }
 }
