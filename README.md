@@ -66,3 +66,13 @@ Year 2 Semester 2
 ### Week 11 - 2020-12-07
 
 - [ ] Merging two files with threads
+
+## Assignments
+
+### Assignment 2 - 2020-12-01
+
+- [x] A binary search tree for text analysis
+
+### Assignment 3 - 2020-12-21
+
+- [x] Dynamic doubly linked list
