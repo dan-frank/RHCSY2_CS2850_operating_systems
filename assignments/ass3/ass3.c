@@ -8,9 +8,10 @@
 #include <pthread.h>
 
 #define NEXTRA 5
-#define MAXELEMENTS 15;
+#define MAXELEMENTS 15
 #define LEFT 0
 #define RIGHT 1
+#define EMPTYSPACE -1
 
 struct node {
     int v;
@@ -57,7 +58,6 @@ int main() {
     l->tail = malloc(sizeof(struct node));
     l->tail->v = 0;
     l->head->next = l->tail;
-
     printList(l);
 
     assignSpace(l);
@@ -76,10 +76,9 @@ int main() {
 void assignSpace(struct list *l) {
     struct node *t = NULL;
 
-    pthread_mutex_lock(&mutex);
     for (int i = 0; i < NEXTRA; i++) {
         t = malloc(sizeof(struct node));
-        t->v = -1;
+        t->v = EMPTYSPACE;
 
         if (l->head == NULL) l->head = t;
         else {
@@ -104,8 +103,7 @@ void assignSpace(struct list *l) {
     }
 
     l->left = l->head;
-    while (l->left->next->v != -1) l->left = l->left->next;
-    pthread_mutex_unlock(&mutex);
+    while (l->left->next->v != EMPTYSPACE) l->left = l->left->next;
 }
 
 void freeList(struct list *l) {
@@ -119,17 +117,16 @@ void freeNode(struct node *n) {
 }
 
 void freeSpace(struct list *l) {
-    pthread_mutex_lock(&mutex);
-    int count = -1;
+    int count = EMPTYSPACE;
     struct node *cur = l->left->next;
-    while (cur->v == -1) {
+    while (cur->v == EMPTYSPACE) {
         cur = cur->next;
         count++;
     }
 
     if (count >= NEXTRA) {
         struct node *delStart = l->left;
-        while (delStart->v != -1) delStart = delStart->next;
+        while (delStart->v != EMPTYSPACE) delStart = delStart->next;
 
         struct node *delEnd = delStart;
         for (int i = 0; i < (count - 1); i++) delEnd = delEnd->next;
@@ -139,7 +136,6 @@ void freeSpace(struct list *l) {
 
         freeNode(delStart);
     }
-    pthread_mutex_unlock(&mutex);
 }
 
 void printList(struct list *l) {
@@ -166,12 +162,12 @@ void pull(struct list *l, int side) {
         if (side == LEFT) {
             if (l->left != l->head) {
                 l->left = l->left->prev;
-                l->left->next->v = -1;
+                l->left->next->v = EMPTYSPACE;
             } else pull(l, RIGHT);
         } else if (side == RIGHT) {
             if (l->right != l->tail) {
                 l->right = l->right->next;
-                l->right->prev->v = -1;
+                l->right->prev->v = EMPTYSPACE;
             } else pull(l, LEFT);
         }
     } else printf("warning: no nodes to delete!\n");
@@ -189,9 +185,9 @@ void pullIntegers(struct list *l) {
 }
 
 void push(struct list *l, int v) {
-    if (l->right->prev->v != -1 && l->left->next->v != -1) assignSpace(l);
-
     pthread_mutex_lock(&mutex);
+    if (l->right->prev->v != EMPTYSPACE && l->left->next->v != EMPTYSPACE) assignSpace(l);
+
     if (v % 2 == 0) {
         l->right = l->right->prev;
         l->right->v = v;
